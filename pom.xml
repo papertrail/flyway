@@ -184,6 +184,11 @@
                 <optional>true</optional>
             </dependency>
             <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
                 <version>${version.spring}</version>
@@ -298,7 +303,7 @@
             <dependency>
                 <groupId>com.microsoft.sqlserver</groupId>
                 <artifactId>sqljdbc4</artifactId>
-                <version>4.0.2206.100</version>
+                <version>4.0</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
@@ -396,6 +401,18 @@
                 <groupId>com.sap.db.jdbc</groupId>
                 <artifactId>ngdbc</artifactId>
                 <version>1.103.0</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>ru.yandex.clickhouse</groupId>
+                <artifactId>clickhouse-jdbc</artifactId>
+                <version>0.1.28</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>19.0</version>
                 <optional>true</optional>
             </dependency>
             <dependency>

@@ -16,6 +16,7 @@
 package org.flywaydb.core.internal.dbsupport;
 
 import org.flywaydb.core.api.FlywayException;
+import org.flywaydb.core.internal.dbsupport.clickhouse.ClickHouseDbSupport;
 import org.flywaydb.core.internal.dbsupport.cockroachdb.CockroachDBDbSupport;
 import org.flywaydb.core.internal.dbsupport.db2.DB2DbSupport;
 import org.flywaydb.core.internal.dbsupport.db2zos.DB2zosDbSupport;
@@ -147,9 +148,12 @@ public class DbSupportFactory {
         if (databaseProductName.startsWith("HDB")) {
             return new SapHanaDbSupport(connection);
         }
-       
+
         if (databaseProductName.startsWith("Greenplum")) {
             return new GreenPlumDbSupport(connection);
+        }
+        if (databaseProductName.startsWith("ClickHouse")) {
+            return new ClickHouseDbSupport(connection);
         }
 
         throw new FlywayException("Unsupported Database: " + databaseProductName);
@@ -224,7 +228,6 @@ public class DbSupportFactory {
             if (databaseProductVersion == null) {
                 throw new FlywayException("Unable to determine database. Product version is null.");
             }
-
 
             return databaseProductVersion;
         } catch (SQLException e) {
