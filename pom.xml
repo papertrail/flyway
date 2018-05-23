@@ -90,16 +90,14 @@
     </modules>
 
     <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
         <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <id>packagecloud-papertrail-releases</id>
+            <url>${papertrail.packagecloud.url}</url>
         </repository>
+        <snapshotRepository>
+            <id>packagecloud-papertrail-snapshots</id>
+            <url>${papertrail.packagecloud.snapshots.url}</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
@@ -149,6 +147,9 @@
         <version.slf4j>1.7.16</version.slf4j>
         <version.jre>8.74</version.jre>
         <version.testcontainers>1.4.2</version.testcontainers>
+        <papertrail.packagecloud.url></papertrail.packagecloud.url>
+        <papertrail.packagecloud.snapshots.url></papertrail.packagecloud.snapshots.url>
+
     </properties>
 
     <dependencyManagement>
@@ -538,14 +539,9 @@
     <build>
         <extensions>
             <extension>
-                <groupId>com.allogy.maven.wagon</groupId>
-                <artifactId>maven-s3-wagon</artifactId>
-                <version>1.0.1</version>
-            </extension>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-http</artifactId>
-                <version>2.8</version>
+                <groupId>io.packagecloud.maven.wagon</groupId>
+                <artifactId>maven-packagecloud-wagon</artifactId>
+                <version>0.0.6</version>
             </extension>
         </extensions>
 
