@@ -20,6 +20,7 @@ jobs:
               mvn -Dpapertrail.packagecloud.url="$env.PACKAGECLOUD_URL" \
                   -Dpapertrail.packagecloud.snapshots.url="$env.PACKAGECLOUD_SNAPSHOT_URL" \
                   -s .circleci/m2/settings.xml \
+                  -DskipTests \
                   deploy
             fi
 
