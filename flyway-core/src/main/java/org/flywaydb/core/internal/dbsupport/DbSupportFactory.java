@@ -17,27 +17,6 @@ package org.flywaydb.core.internal.dbsupport;
 
 import org.flywaydb.core.api.FlywayException;
 import org.flywaydb.core.internal.dbsupport.clickhouse.ClickHouseDbSupport;
-import org.flywaydb.core.internal.dbsupport.cockroachdb.CockroachDBDbSupport;
-import org.flywaydb.core.internal.dbsupport.db2.DB2DbSupport;
-import org.flywaydb.core.internal.dbsupport.db2zos.DB2zosDbSupport;
-import org.flywaydb.core.internal.dbsupport.derby.DerbyDbSupport;
-import org.flywaydb.core.internal.dbsupport.greenplum.GreenPlumDbSupport;
-import org.flywaydb.core.internal.dbsupport.enterprisedb.EnterpriseDBDbSupport;
-import org.flywaydb.core.internal.dbsupport.h2.H2DbSupport;
-import org.flywaydb.core.internal.dbsupport.hsql.HsqlDbSupport;
-import org.flywaydb.core.internal.dbsupport.mysql.MySQLDbSupport;
-import org.flywaydb.core.internal.dbsupport.oracle.OracleDbSupport;
-import org.flywaydb.core.internal.dbsupport.phoenix.PhoenixDbSupport;
-import org.flywaydb.core.internal.dbsupport.postgresql.PostgreSQLDbSupport;
-import org.flywaydb.core.internal.dbsupport.redshift.RedshfitDbSupportViaPostgreSQLDriver;
-import org.flywaydb.core.internal.dbsupport.redshift.RedshfitDbSupportViaRedshiftDriver;
-import org.flywaydb.core.internal.dbsupport.redshift.RedshiftDbSupport;
-import org.flywaydb.core.internal.dbsupport.saphana.SapHanaDbSupport;
-import org.flywaydb.core.internal.dbsupport.solid.SolidDbSupport;
-import org.flywaydb.core.internal.dbsupport.sqlite.SQLiteDbSupport;
-import org.flywaydb.core.internal.dbsupport.sqlserver.SQLServerDbSupport;
-import org.flywaydb.core.internal.dbsupport.sybase.ase.SybaseASEDbSupport;
-import org.flywaydb.core.internal.dbsupport.vertica.VerticaDbSupport;
 import org.flywaydb.core.api.logging.Log;
 import org.flywaydb.core.api.logging.LogFactory;
 
@@ -72,99 +51,11 @@ public class DbSupportFactory {
             LOG.info("Database: " + getJdbcUrl(connection) + " (" + databaseProductName + ")");
         }
 
-        if (databaseProductName.startsWith("Apache Derby")) {
-            return new DerbyDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("SQLite")) {
-            return new SQLiteDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("H2")) {
-            return new H2DbSupport(connection);
-        }
-        if (databaseProductName.contains("HSQL Database Engine")) {
-            // For regular Hsql and the Google Cloud SQL local default DB.
-            return new HsqlDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("Microsoft SQL Server")) {
-            return new SQLServerDbSupport(connection);
-        }
-        if (databaseProductName.contains("MySQL")) {
-            // For regular MySQL, MariaDB and Google Cloud SQL.
-            // Google Cloud SQL returns different names depending on the environment and the SDK version.
-            //   ex.: Google SQL Service/MySQL
-            return new MySQLDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("Oracle")) {
-            return new OracleDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("EnterpriseDB")) {
-            return new EnterpriseDBDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("PostgreSQL 8")) {
-            // Redshift reports a databaseProductName of "PostgreSQL 8.0", and it uses the same JDBC driver,
-            // but only supports a subset of features. Therefore, we need to execute a query in order to
-            // distinguish it from the real PostgreSQL 8:
-            RedshiftDbSupport redshift;
-            if ("RedshiftJDBC".equals(getDriverName(connection))) {
-                redshift = new RedshfitDbSupportViaRedshiftDriver(connection);
-            } else {
-                redshift = new RedshfitDbSupportViaPostgreSQLDriver(connection);
-            }
-            if (redshift.detect()) {
-                return redshift;
-            }
-        }
-        if (databaseProductName.startsWith("PostgreSQL")) {
-            if (isCockroachDB(connection)) {
-                return new CockroachDBDbSupport(connection);
-            }
-            return new PostgreSQLDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("DB2")) {
-            if (getDatabaseProductVersion(connection).startsWith("DSN")) {
-                return new DB2zosDbSupport(connection);
-            } else {
-                return new DB2DbSupport(connection);
-            }
-        }
-        if (databaseProductName.startsWith("Vertica")) {
-            return new VerticaDbSupport(connection);
-        }
-        if (databaseProductName.contains("solidDB")) {
-            // SolidDB was originally developed by a company named Solid and was sold afterwards to IBM.
-            // In the meanwhile IBM also sold solidDB to Unicom Systems.
-            // Therefore no vendor string in search criteria
-            return new SolidDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("Phoenix")) {
-            return new PhoenixDbSupport(connection);
-        }
-
-        if (databaseProductName.startsWith("ASE")
-                || databaseProductName.startsWith("Adaptive") //Newer Sybase ASE versions
-                || databaseProductName.startsWith("sql server")) { // Older Sybase ASE 12.5 installations
-            return new SybaseASEDbSupport(connection);
-        }
-        if (databaseProductName.startsWith("HDB")) {
-            return new SapHanaDbSupport(connection);
-        }
-
-        if (databaseProductName.startsWith("Greenplum")) {
-            return new GreenPlumDbSupport(connection);
-        }
         if (databaseProductName.startsWith("ClickHouse")) {
             return new ClickHouseDbSupport(connection);
         }
 
         throw new FlywayException("Unsupported Database: " + databaseProductName);
-    }
-
-    private static boolean isCockroachDB(Connection connection) {
-        try {
-            return new JdbcTemplate(connection).queryForString("SELECT version()").contains("CockroachDB");
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     /**

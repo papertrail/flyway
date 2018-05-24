@@ -16,10 +16,8 @@
 package org.flywaydb.core.internal.util.scanner;
 
 import org.flywaydb.core.api.FlywayException;
-import org.flywaydb.core.internal.util.FeatureDetector;
 import org.flywaydb.core.internal.util.Location;
 import org.flywaydb.core.internal.util.scanner.classpath.ResourceAndClassScanner;
-import org.flywaydb.core.internal.util.scanner.classpath.android.AndroidScanner;
 import org.flywaydb.core.internal.util.scanner.classpath.ClassPathScanner;
 import org.flywaydb.core.internal.util.scanner.filesystem.FileSystemScanner;
 
@@ -34,11 +32,7 @@ public class Scanner {
 
     public Scanner(ClassLoader classLoader) {
         this.classLoader = classLoader;
-        if (new FeatureDetector(classLoader).isAndroidAvailable()) {
-            resourceAndClassScanner = new AndroidScanner(classLoader);
-        } else {
-            resourceAndClassScanner = new ClassPathScanner(classLoader);
-        }
+        resourceAndClassScanner = new ClassPathScanner(classLoader);
     }
 
     /**

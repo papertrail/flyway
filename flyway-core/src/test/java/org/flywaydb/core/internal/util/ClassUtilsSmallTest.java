@@ -16,7 +16,6 @@
 package org.flywaydb.core.internal.util;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-import org.flywaydb.core.api.migration.spring.SpringJdbcMigration;
 import org.flywaydb.core.internal.util.scanner.Resource;
 import org.flywaydb.core.internal.util.scanner.classpath.ClassPathResource;
 import org.flywaydb.core.internal.util.scanner.classpath.ClassPathScanner;
@@ -95,28 +94,6 @@ public class ClassUtilsSmallTest {
 
         Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new Location("classpath:"), "fun", ".properties");
         assertEquals("funtime.properties", resources[1].getLocation());
-    }
-
-    /**
-     * Tests dynamically adding a jar file to the classpath.
-     */
-    @Test
-    public void addJarToClasspath() throws Exception {
-        assertFalse(new ClassPathResource("db/migration/V1__Initial_structure.sql.sql", getClassLoader()).exists());
-        assertFalse(ClassUtils.isPresent("org.flywaydb.sample.migration.V1_2__Another_user", getClassLoader()));
-
-        String jar = new ClassPathResource("flyway-sample.jar", getClassLoader()).getLocationOnDisk();
-        assertTrue(new File(jar).isFile());
-        ClassUtils.addJarOrDirectoryToClasspath(jar);
-
-        assertTrue(new ClassPathResource("db/migration/V1__Initial_structure.sql", getClassLoader()).exists());
-        assertTrue(ClassUtils.isPresent("org.flywaydb.sample.migration.V1_2__Another_user", getClassLoader()));
-
-        Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new Location("classpath:db/migration"), "V1__", ".sql");
-        assertEquals("db/migration/V1__Initial_structure.sql", resources[0].getLocation());
-
-        Class<?>[] classes = new ClassPathScanner(getClassLoader()).scanForClasses(new Location("classpath:org/flywaydb/sample/migration"), SpringJdbcMigration.class);
-        assertEquals("org.flywaydb.sample.migration.V1_2__Another_user", classes[0].getName());
     }
 
     /**

@@ -22,8 +22,6 @@ import org.flywaydb.core.internal.util.FeatureDetector;
 import org.flywaydb.core.internal.util.Location;
 import org.flywaydb.core.internal.util.UrlUtils;
 import org.flywaydb.core.internal.util.scanner.LoadableResource;
-import org.flywaydb.core.internal.util.scanner.classpath.jboss.JBossVFSv2UrlResolver;
-import org.flywaydb.core.internal.util.scanner.classpath.jboss.JBossVFSv3ClassPathLocationScanner;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -279,9 +277,6 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @return The url resolver for this protocol.
      */
     private UrlResolver createUrlResolver(String protocol) {
-        if (new FeatureDetector(classLoader).isJBossVFSv2Available() && protocol.startsWith("vfs")) {
-            return new JBossVFSv2UrlResolver();
-        }
 
         return new DefaultUrlResolver();
     }
@@ -313,12 +308,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
         }
 
         FeatureDetector featureDetector = new FeatureDetector(classLoader);
-        if (featureDetector.isJBossVFSv3Available() && "vfs".equals(protocol)) {
-            JBossVFSv3ClassPathLocationScanner locationScanner = new JBossVFSv3ClassPathLocationScanner();
-            locationScannerCache.put(protocol, locationScanner);
-            resourceNameCache.put(locationScanner, new HashMap<URL, Set<String>>());
-            return locationScanner;
-        }
+
         if (featureDetector.isOsgiFrameworkAvailable() && (isFelix(protocol) || isEquinox(protocol))) {
             OsgiClassPathLocationScanner locationScanner = new OsgiClassPathLocationScanner();
             locationScannerCache.put(protocol, locationScanner);

@@ -16,15 +16,12 @@
 package org.flywaydb.core.internal.util.scanner.classpath;
 
 import org.flywaydb.core.api.migration.jdbc.JdbcMigration;
-import org.flywaydb.core.internal.dbsupport.SqlStatementBuilder;
-import org.flywaydb.core.internal.dbsupport.cockroachdb.CockroachDBSqlStatementBuilder;
 import org.flywaydb.core.internal.resolver.jdbc.dummy.V2__InterfaceBasedMigration;
 import org.flywaydb.core.internal.resolver.jdbc.dummy.V4__DummyExtendedAbstractJdbcMigration;
 import org.flywaydb.core.internal.resolver.jdbc.dummy.Version3dot5;
 import org.flywaydb.core.internal.util.Location;
 import org.flywaydb.core.internal.util.scanner.LoadableResource;
 import org.flywaydb.core.internal.util.scanner.Resource;
-import org.flywaydb.core.internal.util.scanner.classpath.jboss.JBossVFSv2UrlResolver;
 import org.junit.Test;
 import org.mockito.MockSettings;
 import org.mockito.internal.creation.MockSettingsImpl;
@@ -144,23 +141,6 @@ public class ClassPathScannerSmallTest {
         assertEquals(V2__InterfaceBasedMigration.class, classes[0]);
         assertEquals(Version3dot5.class, classes[2]);
         assertEquals(V4__DummyExtendedAbstractJdbcMigration.class, classes[1]);
-    }
-
-    @Test
-    public void scanForClassesSubPackage() throws Exception {
-        Class<?>[] classes = classPathScanner.scanForClasses(new Location("classpath:org/flywaydb/core/internal/dbsupport"), SqlStatementBuilder.class);
-
-        assertTrue(classes.length >= 10);
-
-        assertEquals(CockroachDBSqlStatementBuilder.class, classes[1]);
-    }
-
-    @Test
-    public void scanForClassesSplitPackage() throws Exception {
-        Class<?>[] classes = classPathScanner.scanForClasses(new Location("classpath:org/flywaydb/core/internal/util"), UrlResolver.class);
-
-        assertTrue(classes.length >= 2);
-        assertTrue(Arrays.asList(classes).contains(JBossVFSv2UrlResolver.class));
     }
 
     @Test
