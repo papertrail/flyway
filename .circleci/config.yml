@@ -33,8 +33,8 @@ jobs:
           shell: /bin/bash
           command: |
             if [ "$CIRCLE_BRANCH" == 'master' ]; then
-              mvn -Dpapertrail.packagecloud.url="$env.PACKAGECLOUD_URL" \
-                  -Dpapertrail.packagecloud.snapshots.url="$env.PACKAGECLOUD_SNAPSHOT_URL" \
+              mvn -Dpapertrail.packagecloud.url="$PACKAGECLOUD_URL" \
+                  -Dpapertrail.packagecloud.snapshots.url="$PACKAGECLOUD_SNAPSHOT_URL" \
                   -s .circleci/m2/settings.xml \
                   -DskipTests \
                   deploy
