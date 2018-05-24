@@ -14,7 +14,7 @@
 -- limitations under the License.
 --
 
-CREATE TABLE `${schema}`.`${table}` (
+CREATE TABLE `${schema}`.`${table}` ON CLUSTER `${cluster}`(
     installed_rank Int32,
     version Nullable(String),
     description String,
