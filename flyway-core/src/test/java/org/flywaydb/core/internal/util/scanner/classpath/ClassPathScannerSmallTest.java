@@ -114,15 +114,6 @@ public class ClassPathScannerSmallTest {
     }
 
     @Test
-    public void scanForResourcesSplitDirectory() throws Exception {
-        LoadableResource[] resources = classPathScanner.scanForResources(new Location("classpath:org/flywaydb/core/internal/dbsupport"), "create", ".sql");
-
-        assertTrue(resources.length > 7);
-
-        assertEquals("org/flywaydb/core/internal/dbsupport/clickhouse/createMetaDataTable.sql", resources[0].getLocation());
-    }
-
-    @Test
     public void scanForResourcesJarFile() throws Exception {
         LoadableResource[] resources = classPathScanner.scanForResources(new Location("classpath:org/junit"), "Af", ".class");
 
