@@ -325,13 +325,18 @@ public class Flyway implements FlywayConfiguration {
      */
     private String installedBy;
 
-
-
-
-
-
-
-
+    /**
+     * Cluster name (must have distributed DDL turned on)
+     *
+     *    <distributed_ddl>
+     *         <!-- Path in ZooKeeper to queue with DDL queries -->
+     *         <path>/clickhouse/task_queue/ddl</path>
+     *
+     *         <!-- Settings from this profile will be used to execute DDL queries -->
+     *         <!-- <profile>default</profile> -->
+     *     </distributed_ddl>
+     */
+    private String cluster;
 
     /**
      * Creates a new instance of Flyway. This is your starting point.
@@ -516,36 +521,6 @@ public class Flyway implements FlywayConfiguration {
     public boolean isGroup() {
         return group;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * Whether to group all pending migrations together in the same transaction when applying them (only recommended for databases with support for DDL transactions).
@@ -996,6 +971,10 @@ public class Flyway implements FlywayConfiguration {
      */
     public void setSkipDefaultResolvers(boolean skipDefaultResolvers) {
         this.skipDefaultResolvers = skipDefaultResolvers;
+    }
+
+    public void setCluster(String cluster) {
+        this.cluster = cluster;
     }
 
     /**
@@ -1501,7 +1480,7 @@ public class Flyway implements FlywayConfiguration {
                 ConfigurationInjectionUtils.injectFlywayConfiguration(callback, this);
             }
 
-            MetaDataTable metaDataTable = new MetaDataTableImpl(dbSupport, schemas[0].getTable(table), installedBy);
+            MetaDataTable metaDataTable = new MetaDataTableImpl(dbSupport, schemas[0].getTable(table), installedBy, cluster);
             if (metaDataTable.upgradeIfNecessary()) {
                 new DbRepair(dbSupport, connectionMetaDataTable, schemas[0], migrationResolver, metaDataTable, callbacks).repairChecksumsAndDescriptions();
                 LOG.info("Metadata table " + table + " successfully upgraded to the Flyway 4.0 format.");
