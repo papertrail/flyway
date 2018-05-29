@@ -25,4 +25,4 @@ CREATE TABLE `${schema}`.`${table}` ON CLUSTER `${cluster}`(
     installed_on DateTime,
     execution_time Int32,
     success UInt8
-) ENGINE = TinyLog;
+) ENGINE = Log;

@@ -55,18 +55,14 @@ public class ClassPathScannerSmallTest {
         LoadableResource[] resources = classPathScanner.scanForResources(new Location("classpath:"), "CheckValidate", ".sql");
 
         // changed to 4 as new test cases are added for SybaseASE, DB2 z/OS, and ClickHouse
-        assertEquals(4, resources.length);
+        assertEquals(2, resources.length);
 
         Set<String> validPaths = new HashSet<String>();
         validPaths.add("migration/validate/CheckValidate1__First.sql");
-        validPaths.add("migration/dbsupport/sybaseASE/validate/CheckValidate1__First.sql");
-        validPaths.add("migration/dbsupport/db2zos/sql/validate/CheckValidate1_1__First.sql");
         validPaths.add("migration/dbsupport/clickhouse/sql/validate/CheckValidate1__First.sql");
 
         assertEquals(true, validPaths.contains(resources[0].getLocation()));
         assertEquals(true, validPaths.contains(resources[1].getLocation()));
-        assertEquals(true, validPaths.contains(resources[2].getLocation()));
-        assertEquals(true, validPaths.contains(resources[3].getLocation()));
     }
 
     @Test
@@ -74,18 +70,14 @@ public class ClassPathScannerSmallTest {
         LoadableResource[] resources = classPathScanner.scanForResources(new Location("classpath:migration"), "CheckValidate", ".sql");
 
         // changed to 4 as new test cases are added for SybaseASE, DB2 z/OS, and ClickHouse
-        assertEquals(4, resources.length);
+        assertEquals(2, resources.length);
 
         Set<String> validPaths = new HashSet<String>();
-        validPaths.add("migration/dbsupport/sybaseASE/validate/CheckValidate1__First.sql");
         validPaths.add("migration/validate/CheckValidate1__First.sql");
-        validPaths.add("migration/dbsupport/db2zos/sql/validate/CheckValidate1_1__First.sql");
         validPaths.add("migration/dbsupport/clickhouse/sql/validate/CheckValidate1__First.sql");
 
         assertEquals(true, validPaths.contains(resources[0].getLocation()));
         assertEquals(true, validPaths.contains(resources[1].getLocation()));
-        assertEquals(true, validPaths.contains(resources[2].getLocation()));
-        assertEquals(true, validPaths.contains(resources[3].getLocation()));
     }
 
     @Test

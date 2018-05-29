@@ -65,8 +65,7 @@ public class SqlMigrationResolverSmallTest {
         SqlMigrationResolver sqlMigrationResolver =
                 new SqlMigrationResolver(null, scanner, new Locations(""), PlaceholderReplacer.NO_PLACEHOLDERS, configuration);
 
-        // changed to 4 as new test cases are added for SybaseASE, DB2, and ClickHouse
-        assertEquals(4, sqlMigrationResolver.resolveMigrations().size());
+        assertEquals(2, sqlMigrationResolver.resolveMigrations().size());
     }
 
     @Test
