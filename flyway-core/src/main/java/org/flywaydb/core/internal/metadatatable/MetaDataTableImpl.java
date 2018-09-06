@@ -68,19 +68,6 @@ public class MetaDataTableImpl implements MetaDataTable {
     private final LinkedList<AppliedMigration> cache = new LinkedList<AppliedMigration>();
 
     /**
-     * Cluster name (must have distributed DDL turned on)
-     *
-     *    <distributed_ddl>
-     *         <!-- Path in ZooKeeper to queue with DDL queries -->
-     *         <path>/clickhouse/task_queue/ddl</path>
-     *
-     *         <!-- Settings from this profile will be used to execute DDL queries -->
-     *         <!-- <profile>default</profile> -->
-     *     </distributed_ddl>
-     */
-    private final String cluster;
-
-    /**
      * The current user in the database.
      */
     private String installedBy;
@@ -92,14 +79,10 @@ public class MetaDataTableImpl implements MetaDataTable {
      * @param table       The metadata table used by flyway.
      * @param installedBy The current user in the database.
      */
-    public MetaDataTableImpl(DbSupport dbSupport, Table table, String installedBy, String cluster) {
+    public MetaDataTableImpl(DbSupport dbSupport, Table table, String installedBy) {
         this.jdbcTemplate = dbSupport.getJdbcTemplate();
         this.dbSupport = dbSupport;
         this.table = table;
-        if(null == cluster) {
-            throw new FlywayException("The cluster name must be provided for ClickHouse migrations. See Flyway.setCluster");
-        }
-        this.cluster = cluster;
         if (installedBy == null) {
             this.installedBy = dbSupport.getCurrentUserFunction();
         } else {
@@ -165,7 +148,6 @@ public class MetaDataTableImpl implements MetaDataTable {
                 Map<String, String> placeholders = new HashMap<String, String>();
                 placeholders.put("schema", table.getSchema().getName());
                 placeholders.put("table", table.getName());
-                placeholders.put("cluster", cluster);
                 String sourceNoPlaceholders = new PlaceholderReplacer(placeholders, "${", "}").replacePlaceholders(source);
 
                 final SqlScript sqlScript = new SqlScript(sourceNoPlaceholders, dbSupport);

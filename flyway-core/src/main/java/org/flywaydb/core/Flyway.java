@@ -326,19 +326,6 @@ public class Flyway implements FlywayConfiguration {
     private String installedBy;
 
     /**
-     * Cluster name (must have distributed DDL turned on)
-     *
-     *    <distributed_ddl>
-     *         <!-- Path in ZooKeeper to queue with DDL queries -->
-     *         <path>/clickhouse/task_queue/ddl</path>
-     *
-     *         <!-- Settings from this profile will be used to execute DDL queries -->
-     *         <!-- <profile>default</profile> -->
-     *     </distributed_ddl>
-     */
-    private String cluster;
-
-    /**
      * Creates a new instance of Flyway. This is your starting point.
      */
     public Flyway() {
@@ -973,10 +960,6 @@ public class Flyway implements FlywayConfiguration {
         this.skipDefaultResolvers = skipDefaultResolvers;
     }
 
-    public void setCluster(String cluster) {
-        this.cluster = cluster;
-    }
-
     /**
      * <p>Starts the database migration. All pending migrations will be applied in order.
      * Calling migrate on an up-to-date database has no effect.</p>
@@ -1480,7 +1463,7 @@ public class Flyway implements FlywayConfiguration {
                 ConfigurationInjectionUtils.injectFlywayConfiguration(callback, this);
             }
 
-            MetaDataTable metaDataTable = new MetaDataTableImpl(dbSupport, schemas[0].getTable(table), installedBy, cluster);
+            MetaDataTable metaDataTable = new MetaDataTableImpl(dbSupport, schemas[0].getTable(table), installedBy);
             if (metaDataTable.upgradeIfNecessary()) {
                 new DbRepair(dbSupport, connectionMetaDataTable, schemas[0], migrationResolver, metaDataTable, callbacks).repairChecksumsAndDescriptions();
                 LOG.info("Metadata table " + table + " successfully upgraded to the Flyway 4.0 format.");
