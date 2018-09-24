@@ -18,6 +18,7 @@ package org.flywaydb.core.internal.dbsupport.clickhouse;
 import org.flywaydb.core.internal.dbsupport.JdbcTemplate;
 import org.flywaydb.core.internal.dbsupport.Schema;
 import org.flywaydb.core.internal.dbsupport.Table;
+import ru.yandex.clickhouse.except.ClickHouseException;
 
 import java.sql.SQLException;
 import java.util.Collection;
@@ -41,7 +42,14 @@ public class ClickHouseSchema extends Schema<ClickHouseDbSupport> {
 
     @Override
     protected boolean doExists() throws SQLException {
-        return jdbcTemplate.queryForInt("SELECT COUNT(*) FROM system.databases WHERE name = ?", name) > 0;
+        try {
+            return jdbcTemplate.queryForInt("SELECT COUNT(*) FROM system.databases WHERE name = ?", name) > 0;
+        } catch (ClickHouseException e) {
+            if (e.getMessage().contains(name + " doesn't exist")) {
+                return false;
+            }
+            throw e;
+        }
     }
 
     @Override
